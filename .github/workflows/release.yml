@@ -18,14 +18,13 @@ jobs:
         VERSION_NAME=$(basename $BRANCH_NAME)
         echo "tagname=${VERSION_NAME}" >> $GITHUB_OUTPUT
 
-    steps:
     - name: Build
-    - run: echo ${{ steps.compute-tag.outputs.tagname }} >> ./release_file.txt
-    
+      run: echo ${{ steps.compute-tag.outputs.tagname }} >> ./release_file.txt
+      
     - name: Create release
       uses: ncipollo/release-action@v1
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
-        tag: ${{ steps.compute-tag.outputs.tagname }} # Explanation No. 5
+        tag: ${{ steps.compute-tag.outputs.tagname }}
         commit: main
         artifacts: './release_file.txt'
