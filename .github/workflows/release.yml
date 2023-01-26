@@ -3,7 +3,9 @@ name: Build and release on push to releases
 on:
   push:
     branches: [ releases/* ]
-
+permissions:
+  contents: write
+  
 jobs:
   release:
     runs-on: ubuntu-latest
