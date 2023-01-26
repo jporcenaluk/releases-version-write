@@ -1,0 +1,31 @@
+name: Build and release on push to releases
+
+on:
+  push:
+    branches: [ releases/* ]
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+    - name: Compute Tag Name
+      id: compute-tag
+      run: |
+        BRANCH_NAME=$(git branch --show-current)
+        VERSION_NAME=$(basename $BRANCH_NAME)
+        echo "tagname=${VERSION_NAME}" >> $GITHUB_OUTPUT
+
+    steps:
+    - name: Build
+    - run: echo ${{ steps.compute-tag.outputs.tagname }} >> ./release_file.txt
+    
+    - name: Create release
+      uses: ncipollo/release-action@v1
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        tag: ${{ steps.compute-tag.outputs.tagname }} # Explanation No. 5
+        commit: main
+        artifacts: './release_file.txt'
